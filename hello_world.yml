@@ -3,18 +3,21 @@
   hosts: all
   vars:
     user_name: "Kava"
+
   tasks:
     - name: Hello Message
-      debug:
-        msg: "Hello {{user_name}} !"
+      ansible.builtin.debug:
+        msg: "Hello {{ user_name }}!"
 
-- name: ansible facts playbook
+- name: Ansible facts playbook
   hosts: localhost
   gather_facts: true
+
   tasks:
     - name: Define custom facts
-      ansible.buildin.set_fact:
+      ansible.builtin.set_fact:
         server_role: "frontend"
-    - name: Use custom and build-in fact
-      ansible.buildin.debug:
-        msg: "The {{ansible_hostname}} is assigned the role {{server_role}}"
+
+    - name: Use custom and built-in fact
+      ansible.builtin.debug:
+        msg: "The {{ ansible_hostname }} is assigned the role {{ server_role }}"
