@@ -1,9 +1,13 @@
+---
 - name: Hello World Sample
   hosts: all
+  vars:
+    user_name: "Kava"
   tasks:
     - name: Hello Message
       debug:
-        msg: "Hello World!"
+        msg: "Hello {{user_name}} !"
+
 - name: ansible facts playbook
   hosts: localhost
   gather_facts: true
