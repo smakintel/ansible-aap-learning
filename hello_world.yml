@@ -4,3 +4,13 @@
     - name: Hello Message
       debug:
         msg: "Hello World!"
+- name: ansible facts playbook
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Define custom facts
+      ansible.buildin.set_fact:
+        server_role: "frontend"
+    - name: Use custom and build-in fact
+      ansible.buildin.debug:
+        msg: "The {{ansible_hostname}} is assigned the role {{server_role}}"
