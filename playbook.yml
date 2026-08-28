@@ -1,0 +1,134 @@
+# variables , facts 
+---
+- name: Hello World Sample
+  hosts: all
+  tasks:
+    - name: Hello Message
+      ansible.builtin.debug:
+        msg: "Hello {{ user_name }}!"
+
+- name: Ansible facts playbook
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: Define custom facts
+      ansible.builtin.set_fact:
+        server_role: "frontend"
+
+    - name: Use custom and built-in fact
+      ansible.builtin.debug:
+        msg: "The {{ ansible_hostname }} is assigned the role {{ server_role }}"
+
+# 3 core constructs in ansible (Conditioners, Handlers , Loops)
+
+# Conditoners
+- name: variable playbook test
+  hosts: localhost
+
+  vars:
+    my_mood: happy
+
+  tasks:
+    - name: task, based on my_mood var
+      ansible.builtin.debug:
+        msg: "Yay! I am {{ my_mood }}!"
+      when: my_mood == "happy"
+
+    - name: task, based on my_mood var
+      ansible.builtin.debug:
+        msg: "Ask at your own risk. I'm {{ my_mood }}!"
+      when: my_mood == "grumpy"
+
+# Conditoners with facts
+- name: variable playbook test
+  hosts: localhost
+
+  tasks:
+    - name: Install httpd
+      ansible.builtin.package:
+        name: httpd
+        state: latest
+      when: ansible_distribution == 'RedHat'
+
+    - name: Install apache
+      ansible.builtin.package:
+        name: apache2
+        state: latest
+      when: ansible_distribution == 'Debian' or
+            ansible_distribution == 'Ubuntu'
+
+# using results of previous task to execute next task
+
+- name: variable playbook test
+  hosts: localhost
+
+  tasks:
+  - name: Ensure httpd package is present
+    ansible.builtin.package:
+      name: httpd
+      state: latest
+    register: httpd_results
+
+  - name: Restart httpd
+    ansible.builtin.service:
+      name: httpd
+      state: restarted
+    when: httpd_results.changed
+
+# Ansible Handlers
+# OThers task using notify directive ty;pically used for actions like restartign services , reloading configurations.
+# they only run when somethign has changed
+
+- name: variable playbook test
+  hosts: localhost
+
+  tasks:
+  - name: Ensure httpd package is present
+    ansible.builtin.package:
+      name: httpd
+      state: latest
+    notify: restart_httpd
+
+  handlers:
+  - name: restart_httpd
+    ansible.builtin.service:
+      name: httpd
+      state: restarted
+
+# Ansible variables and Loops
+# Without loop
+- name: Ensure users
+  hosts: localhost
+  become: true
+
+  tasks:
+  - name: Ensure user is present
+    ansible.builtin.user:
+      name: dev_user
+      state: present
+
+  - name: Ensure user is present
+    ansible.builtin.user:
+      name: qa_user
+      state: present
+
+  - name: Ensure user is present
+    ansible.builtin.user:
+      name: prod_user
+      state: present
+
+# using loops to avoid repettion
+- name: Ensure users
+  hosts: localhost
+  become: true
+
+  tasks:
+  - name: Ensure user is present
+    ansible.builtin.user:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - dev_user
+      - qa_user
+      - prod_user
