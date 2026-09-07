@@ -132,3 +132,9 @@
       - dev_user
       - qa_user
       - prod_user
+
+
+  - name: Update MOTD from jinja2 template
+    ansible.builtin.template:
+      src: template/motd.j2
+      dest: /etc/motd
