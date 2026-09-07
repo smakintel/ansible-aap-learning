@@ -1,0 +1,12 @@
+---
+- name: Hello World Sample
+  hosts: all
+  become: true
+  tasks:
+    - name: Hello Message
+      ansible.builtin.debug:
+        msg: "Hello {{ user_name }}!"
+    - name: Update MOTD from jinja2 template
+      ansible.builtin.template:
+        src: templates/motd.j2
+        dest: /etc/motd
