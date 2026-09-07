@@ -3,4 +3,4 @@
   hosts: web
   become: true
   roles:
-    - webops.apache.apache
+    - apache
