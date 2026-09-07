@@ -19,7 +19,11 @@
     - name: Use custom and built-in fact
       ansible.builtin.debug:
         msg: "The {{ ansible_hostname }} is assigned the role {{ server_role }}"
-
+        
+    - name: Update MOTD from jinja2 template
+      ansible.builtin.template:
+        src: template/motd.j2
+        dest: /etc/motd
 # 3 core constructs in ansible (Conditioners, Handlers , Loops)
 
 # Conditoners
@@ -134,7 +138,3 @@
       - prod_user
 
 
-  - name: Update MOTD from jinja2 template
-    ansible.builtin.template:
-      src: template/motd.j2
-      dest: /etc/motd
